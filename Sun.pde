@@ -1,15 +1,14 @@
 
 class Sun extends DrawableSphere {
-  static final int SCALE_SUN=2;
+  static final int SCALE_SUN=3;
   TexturedSphere ts;
   
   public Sun(){
     location=new PVector(0, 0, 0);
-   if (TEXTURED_SUN)
+   if (TEXTURED_SUN){
       ts=new TexturedSphere("Sun.jpg", SUN_SIZE/SCALE_SUN);
-  // else
-  //  {
-  //  }
+      ts.setRot(0.24);
+   }
   }
   
   void draw(){
@@ -18,6 +17,8 @@ class Sun extends DrawableSphere {
     if (TEXTURED_SUN)
     {
       pushMatrix();
+      //emissive(255, 170, 170);
+      //lights();  
       ts.draw();
       popMatrix();
     }
@@ -28,7 +29,7 @@ class Sun extends DrawableSphere {
     }
   }
   
-    public String toString(){
+  public String toString(){
     return "Sun: x:"+location.x+", y:"+location.y;
   }
 }

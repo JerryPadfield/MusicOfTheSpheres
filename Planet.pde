@@ -1,40 +1,52 @@
 import oscP5.*;
 import netP5.*;
-//import java.util.*;
 
 class Planet extends AudioPlanet implements Comparable {
-  final static int SCALE_SIZE=1000;
-  final static float SCALE_SPEED=30;
+  final static int SCALE_SIZE=1500;
+  final static float SCALE_SPEED=25;
+  static final float SCALE_RAD=2.1;
   int index;
   float speed;
   int r=0xc0, g=0xc0, b=0xc0;
   int _size=int(random(10, 20));
   float shine=5.0f;
   PVector attractor;
-  int rad=100+SUN_SIZE;
+  float rad=100+SUN_SIZE;
   float angle;
   TexturedSphere ts=null;
   String name;
 
-  public Planet(Sun att, String n){
-    attractor=att.location;
-    location=att.location.copy();
+  public float getX() { return location.x;}
+  public float getY() { return location.y; }
+  
+  public float distanceFrom(Planet other){
+    float dy=getY()-other.getY();
+    float dx=getX()-other.getX();
+    float dist = sqrt(pow(dy, 2)+pow(dx, 2));
+    return dist;
+  }
+  //public Planet(Planet p, int o, String s){
+    
+  //}
+  public Planet(Sun att, int radius, String n){
+    this(att, radius, n, false);
+  }
+  public Planet(Sun att, int radius, String n, boolean rings){
+    if (att!=null){
+      attractor=att.location;
+      location=att.location.copy();
+    } 
     name=n;
     if (TEXTURED_PLANETS){
-      ts=new TexturedSphere(n+".jpg", _size);
+      ts=new TexturedSphere(n+".jpg", _size, rings);
     }
     index=idx++;
+    rad=((radius+SUN_SIZE)/SCALE_RAD);
   }
-  
-  public Planet(Sun att, int radius, String n){
-    this(att, n);
-    rad=(radius+(SUN_SIZE/SCALE_ALL));
-  }
-
   void setSize(int s)  { _size=(s/SCALE_SIZE); if (ts!=null) ts.setSize(s/SCALE_SIZE); }
   void setSpeed(float s){ speed=s/SCALE_SPEED; }
   void setRadius(int r) { rad=r/SCALE_ALL; }
-  void setColor(int i, int j, int k){ r=i; g=j; b=k; }
+  void setColor(int i, int j, int k)  { r=i; g=j; b=k; }
   void setRotation(float f)  { ts.setRot(f); }
   float getRotation() { return ts.rotationY; }
   
@@ -46,11 +58,8 @@ class Planet extends AudioPlanet implements Comparable {
   }
 
   void draw(){
-
     pushMatrix();
-
     translate(location.x, location.y, location.z);
-    
     if (!TEXTURED_PLANETS){
       fill(r, g, b);
       shininess(shine);
@@ -59,13 +68,13 @@ class Planet extends AudioPlanet implements Comparable {
     else { 
       ts.draw();
     }
-      popMatrix();
-      if (DRAW_ORBITS){
-        stroke(300-(rad/SCALE_ALL), 0, rad);
+    popMatrix();
+    if (DRAW_ORBITS){
+        stroke(600-(rad/SCALE_ALL), 0, rad/10, 50);
         fill(0, 0);
         ellipse(sun.location.x, sun.location.y, 2*rad, 2*rad);
         noStroke();
-      }
+    }
   }
 
   void broadcast(OscP5 oscP5, NetAddress na){

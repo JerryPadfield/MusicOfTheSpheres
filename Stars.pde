@@ -1,10 +1,11 @@
 class Stars {
-  final static int R=2000;
+  final static int R=2500;
   float[][] stars;
   PVector fills[];
+  PShape starShapes[];
   final static int NUM_STARS=1500;
   final static int STAR_DETAIL=10;
-  final static int STAR_SIZE=5;
+  final static int STAR_SIZE=8;
   
   public Stars()
   {
@@ -21,11 +22,16 @@ class Stars {
         };
        fills[i]=new PVector(random(0, 255), random(0, 255), random(0, 255));
       }
+      starShapes=new PShape[NUM_STARS];
+      for (int i=0; i<stars.length; i++){
+        starShapes[i]=createShape(SPHERE, STAR_SIZE);
+        starShapes[i].setStroke(false);
+      }
     }
 
     void draw()
     {
-      noStroke();
+      //noStroke();
       sphereDetail(STAR_DETAIL);
       for (int i = 0; i < stars.length; i++)
       {
@@ -37,6 +43,7 @@ class Stars {
         fills[i].y++; if (fills[i].y>255) fills[i].y=0;
         fills[i].z++; if (fills[i].z>255) fills[i].z=0;
         sphere(STAR_SIZE);
+        //shape(starShapes[i]);
         popMatrix();
       }
       sphereDetail(SPHERE_DETAIL);

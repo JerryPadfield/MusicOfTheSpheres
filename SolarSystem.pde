@@ -1,15 +1,14 @@
 import ddf.minim.*;
 import ddf.minim.ugens.*;
-import oscP5.*;
-import netP5.*;
+//import oscP5.*;
+//import netP5.*;
 import java.util.*;
 /*
+ * Music of the Spheres - Jerry Padfield 2017
+ * MA Creative Media Practice - University of the West of Scotland - uws.ac.uk
  * TODO:
- * provide different camera movements ???
- * Fix camera and co-ordinates system
- * Give Saturn some rings (beginShape)
- * implement minim audio objects
- * some nice lighting
+ * 
+ *  ?
  */
 // options & constants
 static final int SCALE_ALL=3;        // scale all proportions down by this amount
@@ -21,26 +20,24 @@ static final boolean TEXTURED_PLANETS=true;   // load textures on planets
 static final boolean TEXTURED_SUN=true;        // load texture on sun
 static final int NUM_PLANETS=8;
 static final boolean USE_MINIM=true;      // use Minim for audio creation
-static final boolean USE_OSC=false;         // output Osc (for PD/MaxMSP)
+//static final boolean USE_OSC=false;         // output Osc (for PD/MaxMSP)
 static final boolean DRAW_ORBITS=true;    // Draw the planets' orbit paths - can't depth sort these properly unfortunately
-static final int OSC_CHANNEL=12000;        // OSC channel -> must match PD patch
+//static final int OSC_CHANNEL=12000;        // OSC channel -> must match PD patch
 static final boolean DRAW_WAVEFORMS=true;  // draw audio output waveforms
 static final boolean MY_DEPTH_SORT=true;    // use depth sort algorithm: TODO remove this
 static final int BUFFER_SCALE=6;          // how much to scale the audio buffer we sample to draw the audio waveform
-static final boolean ENABLE_AUDIO_RECORDING=false; // whether to allow audio recording - this is to ensure not accidentally recording
-Stars theStars;  // starfield which twinkles - NOT USED
+static final boolean ENABLE_AUDIO_RECORDING=true; // whether to allow audio recording - this is to ensure not accidentally recording
+//Stars theStars;  // starfield which twinkles - NOT USED
 
-static int idx=0;  // holds the planets index from the sun to identify to PD - not needed
+//static int idx=0;  // holds the planets index from the sun to identify to PD - not needed
 Planet planets[]=new Planet[NUM_PLANETS];
 Sun sun;
-
-//kludge FIXME
 Planet starfield;    // draw the bg stars on a big textured sphere
 Planet earth;        // hold a reference to earth so we can point the camera at it
 CameraMover cameraMover;  // moves the camera around
 // OSC broadcasting - NOT USED
-OscP5 osc;
-NetAddress na;
+//OscP5 osc;
+//NetAddress na;
 // Minim audio
 Minim minim;
 AudioOutput audioOutput;
@@ -103,9 +100,8 @@ DrawableSphere[] bubble_sort(DrawableSphere array[]) {
   return retPlan;
 }
 
-void screenshot(){
-  saveFrame("MotS-######.png");
-}
+void screenshot()  {  saveFrame("screenshots/MotS-######.png"); }
+
 void swapPlanets(int i, int j, DrawableSphere[] array) {
   DrawableSphere temp;
   temp = array[i];
@@ -125,8 +121,8 @@ void setup(){
   fullScreen(P3D); noCursor();
   cameraZ = (height/2.0) / tan(fov/2.0);
   defaultPerspective();
-  fill(255);
-  theFont=createFont("Calibri", 32);
+  theFont=createFont("Calibri", FONT_SIZE_BIG);
+  theOtherFont=createFont("Calibri", FONT_SIZE);
   if (DEPTH_SORTING){
  //   hint(ENABLE_DEPTH_SORT);  // This fixes depth sorting but makes things incredibly slow
   }
@@ -134,9 +130,9 @@ void setup(){
   sphereDetail(SPHERE_DETAIL);
   smooth(32);
   sun=new Sun();
-  if (!DEPTH_SORTING){
-    theStars=new Stars();
-  }
+//  if (!DEPTH_SORTING){
+//    theStars=new Stars();
+//  }
 
   // Minim sound
   if (USE_MINIM){
@@ -145,6 +141,7 @@ void setup(){
     audioOutput = minim.getLineOut(Minim.STEREO, 2048);
     audioOutput.shiftGain(-120, 0, 10000); //fade sound in
     recorder=minim.createRecorder(audioOutput, RECORDING_FILE);
+    //recorder.beginRecord();
   }
   // TODO:
    planets[0] = new PlanetMercury(sun); //... etc
@@ -167,116 +164,112 @@ void setup(){
   t=new Timer(true);
   t.scheduleAtFixedRate((TimerTask)cameraMover, 100, 100);
 
-  if (USE_OSC){
-    osc=new OscP5(this, OSC_CHANNEL);
-    na=new NetAddress("127.0.0.1", OSC_CHANNEL);  // localhost
-  }
+//  if (USE_OSC){
+//    osc=new OscP5(this, OSC_CHANNEL);
+//    na=new NetAddress("127.0.0.1", OSC_CHANNEL);  // localhost
+//  }
   background(0);
-  noStroke();
 }
 // animate text out via alpha channel at intro
 private int alpha=255;
-private PFont theFont;
+private PFont theFont, theOtherFont;
+private static final int FONT_SIZE_BIG=48;
+private static final int FONT_SIZE=32;
+private static final int FONT_SIZE_SMALL=16;
 private void drawIntro(){
- // pushMatrix();
+  pushMatrix();
+  hint(DISABLE_DEPTH_TEST);
   camera();
   perspective();
   noLights();
-  
+ 
   fill(0, 0, 0, alpha);
   stroke(0, 0, 0, alpha);
   rect(0, 0, width, height);
   fill(255, 255, 255, alpha);
   stroke(255, 255, 255, alpha);
   alpha--;
-  textSize(32);
+  textSize(FONT_SIZE_BIG);
   textFont(theFont);
   int textCounter=0;
   text("Music of the Spheres", width/2, height/2);
-  textSize(24);
+  textSize(FONT_SIZE);
+  textFont(theOtherFont);
   textCounter+=36;
   text("By Jerry Padfield", width/2, height/2+textCounter);
   textCounter+=28;
-  textSize(12);
+  textSize(FONT_SIZE_SMALL);
   text("University of the West of Scotland", width/2, height/2+textCounter);
-  textCounter+=14;
+  textCounter+=FONT_SIZE_SMALL;
   text("MA Creative Media Practice", width/2, height/2+textCounter);
-  textCounter+=48;
+  textCounter+=(FONT_SIZE_SMALL*3);
   text("CMPG11006 Creative Media Practice Assignment 2017", width/2, height/2+textCounter);
-  textCounter +=14;
+  textCounter +=FONT_SIZE_SMALL;
   text("jerrypadfield.co.uk", width/2, height/2+textCounter);
-  //popMatrix();
+  popMatrix();
+  hint(ENABLE_DEPTH_TEST);
   if (alpha==0) { state=State.LOADED; } // stop drawing text
-  // also fade in audio
 }
 float light=0.0025f;
 float LIGHT_DELTA=0.001f;
 void defaultLighting(){
   // lighting slows things down
-  //ambientLight(170, 170, 100);
- // spotLight(175, 175, 40, 0, 0, 0, 1, 0, 0, PI, 0.01);
- // spotLight(175, 175, 40, 0, 0, 0, -1, 0, 0, PI, .01);
-//  ambientLight(102, 102, 92);
   lightFalloff(1, 0, 0);   
- pointLight(255, 255, 255, 0, 0, 0);
-     lightFalloff(0.1, light, 0.00001); //light falls off right behind the surface of the sun
+  pointLight(255, 255, 255, 0, 0, 0);
+  lightFalloff(0.1, light, 0.00001); //light falls off right behind the surface of the sun
   ambientLight(255, 255, 180, 0, 0, 0); //ambientLight in the center of the sun
-//lightSpecular(204, 204, 154);
-//directionalLight(102, 102, 102, 0, 0, -1);
+  //lightSpecular(204, 204, 154);
 }
+
 void draw(){
+  surface.setTitle("Music of the Spheres, FPS: "+frameRate);
   background(0);
   noStroke();
-  //fill(255);
   noFill();
   defaultLighting();
   translate(width/2, height/2);
   cameraMover.setCamera();
 
-  if (!DEPTH_SORTING)
-      theStars.draw();
-  else {
+//  if (!DEPTH_SORTING){
+//      theStars.draw();
+//  } else {
     starfield.move();
     starfield.draw();
-  }
+//  }
   noStroke();
-  //noFill();
   fill(255);
-    for (int i=0; i<NUM_PLANETS; i++){
-      planets[i].move();
-      planets[i].broadcast(osc, na);
-    }
+  for (int i=0; i<NUM_PLANETS; i++){
+    planets[i].move();
+    //planets[i].broadcast(osc, na);
+  }
   if (!MY_DEPTH_SORT){
     sun.draw();
-     for (int i=0; i<NUM_PLANETS; i++)
+    for (int i=0; i<NUM_PLANETS; i++)
       planets[i].draw();
-    
   } else {
     DrawableSphere [] drawPlanets=bubble_sort(planets);
     for (int i=0; i<NUM_PLANETS+1; i++){
-    //  if (drawPlanets[i] instanceof Sun){
-    //    lights();
-    //  }
       drawPlanets[i].draw();
-    //  if (drawPlanets[i] instanceof Sun){
-    //    defaultLighting();
-    //  }      
     }
   }
   // draw the Minim waveforms
   if (DRAW_WAVEFORMS){
     stroke(255, 255, 255, 80);
+    hint(DISABLE_DEPTH_TEST);
+//      translate(0, 0, -10);
+    strokeWeight(2);
+    pushMatrix();
+    camera();
+    perspective();
     for (int i = 0; i < audioOutput.bufferSize()/BUFFER_SCALE-1; i++)
     {
-    pushMatrix();
-      camera();
-      perspective();
       float x1 = map(i, 0, audioOutput.bufferSize()/BUFFER_SCALE, 0, width);
       float x2 = map(i+1, 0, audioOutput.bufferSize()/BUFFER_SCALE, 0, width);
       line(x1, height-150 + audioOutput.left.get(i)*50, x2, height-150 + audioOutput.left.get(i+1)*50);
       line(x1, height-50 + audioOutput.right.get(i)*50, x2, height-50 + audioOutput.right.get(i+1)*50);
-    popMatrix();
     }
+    popMatrix();
+    hint(ENABLE_DEPTH_TEST);
   }
    if (state == State.INTRO){
       drawIntro();
@@ -290,19 +283,17 @@ public void keyReleased(){
 
 public void keyPressed(){
   if (keyPressed){
-    if (key=='R'||key=='r'){  // reset
-      //h=0.35*45; w=0.35*45; z=0.35*45;
+    if (key=='R'||key=='r'){  // reset the camera
       cameraMover.reset();
-    } else if (key=='Q' || key == 'q'){
-          cameraMover.startMoving();;
-
-      cameraMover.moveZ(CAMERA_MOVE);
+    } else if (key=='Q' || key == 'q'){ // increase Z
+        cameraMover.startMoving();;
+        cameraMover.moveZ(CAMERA_MOVE);
     }
-    else if (key=='W' || key == 'w'){
-    cameraMover.startMoving();;
+    else if (key=='W' || key == 'w'){  // decrease Z
+      cameraMover.startMoving();;
       cameraMover.moveZ(-CAMERA_MOVE);
     }
-//    else if (key == 'l' || key=='L'){
+//    else if (key == 'l' || key=='L'){    // for testing lighting values
 //      light+=LIGHT_DELTA;
  //     System.err.println("light: "+light);
 //    }
@@ -315,12 +306,12 @@ public void keyPressed(){
   }
     else if (key=='P' || key == 'p'){
       if (recorder.isRecording()){
-        System.err.println("Saving file "+RECORDING_FILE);
+        System.err.println("Saving file: "+RECORDING_FILE);
         recorder.endRecord();
         recorder.save();
       } else { 
         if (ENABLE_AUDIO_RECORDING){
-          System.err.println("Recording to "+RECORDING_FILE);
+          System.err.println("Recording to: "+RECORDING_FILE);
           recorder.beginRecord();
         }
       }
@@ -349,13 +340,13 @@ public void keyPressed(){
   }
 }
 
-/* incoming osc message are forwarded to the oscEvent method. */
+/* incoming osc message are forwarded to the oscEvent method.
 void oscEvent(OscMessage theOscMessage) {
-  /* print the address pattern and the typetag of the received OscMessage */
+  // print the address pattern and the typetag of the received OscMessage
   //  print("### received an osc message.");
   //  print(" addrpattern: "+theOscMessage.addrPattern());
   //  println(" typetag: "+theOscMessage.typetag());
-}
+} */
 void stop(){
   if (USE_MINIM){
     if (recorder.isRecording()){

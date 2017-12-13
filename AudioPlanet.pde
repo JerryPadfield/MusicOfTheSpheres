@@ -1,8 +1,9 @@
 import java.util.TimerTask;
 
-// base class for all 3d celestial bodies:
-// sun, planets (moons)
-// this allows depth-sorting
+/* base class for all 3d celestial bodies:
+ * sun, planets (moons)
+ * this allows depth-sorting
+ */
 abstract class DrawableSphere {
   PVector location=new PVector(0,0,0);
   abstract void draw();
@@ -29,11 +30,10 @@ class AudioPlanet extends DrawableSphere
 
 /* class to animate the movement of the camera
  * also handles moving the camera if a key is pressed
- * TODO: VR movements
  */
 class CameraMover extends TimerTask {
 
-  private float x, y, z=MAX_Z;
+  private float x, y, z=(MAX_Z-200);
   private float offsetX, offsetY, offsetZ;
   private float moveX, moveY, moveZ;
   private boolean moving=false;
@@ -74,6 +74,8 @@ class CameraMover extends TimerTask {
   private void moveEllipse(){
     offsetX = ellipseRadX * (float)Math.cos(t);
     offsetY = ellipseRadY * (float)Math.sin(t);
+    //offsetZ = ellipseRadZ * (float)Math.sin(t);
+    //offsetZ=-offsetX;
     t+=0.001;
     debug("Camera: x: "+getX()+", y:"+getY());
   }

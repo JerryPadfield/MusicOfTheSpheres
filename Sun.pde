@@ -2,17 +2,19 @@
 class Sun extends DrawableSphere {
   static final int SCALE_SUN=3;
   TexturedSphere ts;
+  //PShader theShader;
   
   public Sun(){
     location=new PVector(0, 0, 0);
+   // theShader=loadShader("Sun.glsl");
    if (TEXTURED_SUN){
-      ts=new TexturedSphere("Sun.jpg", SUN_SIZE/SCALE_SUN);
+      ts=new TexturedSphere("sun.jpg", SUN_SIZE/SCALE_SUN);
       ts.setRot(0.24);
    }
   }
   
   void draw(){
-    
+    //shader(theShader);
     translate(location.x, location.y, location.z);
     if (TEXTURED_SUN)
     {

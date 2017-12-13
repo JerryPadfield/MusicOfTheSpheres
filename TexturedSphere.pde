@@ -1,4 +1,4 @@
-import processing.opengl.*;
+//import processing.opengl.*;
 
 class TexturedSphere {
   PImage texmap;
@@ -6,7 +6,7 @@ class TexturedSphere {
   //TODO: load obj?
   // PShape should me more streamlined
   private boolean USE_PSHAPE=true;
-  private PShape rings=null;
+  //private PShape rings=null;
   int sDetail = SPHERE_DETAIL;  // Sphere detail setting
   float rotationX = 0;
   float rotationY = 0; float rotationZ=0;
@@ -35,36 +35,36 @@ class TexturedSphere {
       sphere.setStroke(false);
       //sphere.rotateX(radians(90));
       sphere.setTexture(texmap);
-      if (rings){
-        ringsShape=createShape();
-        ringsShape.beginShape();
+     // if (rings){
+     //   ringsShape=createShape();
+     //   ringsShape.beginShape();
  
-          ringsShape.rotateX(radians(90-27));
+     //     ringsShape.rotateX(radians(90-27));
           // Exterior part of shape
           // Calculate the path as a sine wave
-          ringsShape.setStroke(255);
-          ringsShape.setFill(124);
-          for (int a=0; a < 360; a += 1) {
-            ringsShape.vertex(cos(a)*150,sin(a)*150);
-          }
+     //     ringsShape.setStroke(255);
+     //     ringsShape.setFill(124);
+     //     for (int a=0; a < 360; a += 1) {
+     //       ringsShape.vertex(cos(a)*150,sin(a)*150);
+     //     }
 
           // Interior part of shape
-          ringsShape.beginContour();
-          ringsShape.setFill(0);
-          ringsShape.setStroke(0);
-          for (int a=0; a < 360; a += 1) {
-            ringsShape.vertex(cos(a)*100,sin(a)*100);
-          }
-          ringsShape.endContour();
+     //     ringsShape.beginContour();
+     //     ringsShape.setFill(0);
+     //     ringsShape.setStroke(0);
+     //     for (int a=0; a < 360; a += 1) {
+     //       ringsShape.vertex(cos(a)*100,sin(a)*100);
+     //     }
+     //     ringsShape.endContour();
 
-        ringsShape.endShape();
-      }
+     //   ringsShape.endShape();
+     // }
    }
   void setRot(float r) { velocityY=r; }
   TexturedSphere(String s, float r) { this(s, r, false); }
   TexturedSphere(String s, float r, boolean rings)
   {
-    texmap = loadImage(s);
+    texmap = loadImage("data/"+s);
     if (texmap!=null)
       loaded=true;
     else System.out.println("Couldn't load image: "+s);
@@ -82,28 +82,28 @@ class TexturedSphere {
   void draw()
   {
     pushMatrix();
-    noFill();
-    noStroke();
+      noFill();
+      noStroke();
 
-    rotateX(radians(90));  // fixme
-    rotateY(radians(rotationY));
-    rotateZ(radians(180));
-    if (!USE_PSHAPE){
-      textureMode(IMAGE);
-      //shininess(5.0);
-      //ambient(255);
-      //specular(255);
-      texturedSphere(globeRadius, texmap);
-    } else {
-//    pushMatrix();
-      if (ringsShape!=null){
-        shape(ringsShape);
+      rotateX(radians(90));  // fixme
+      rotateY(radians(rotationY));
+      rotateZ(radians(180));
+      if (!USE_PSHAPE){
+        textureMode(IMAGE);
+        //shininess(5.0);
+        //ambient(255);
+        //specular(255);
+        texturedSphere(globeRadius, texmap);
+      } else {
+//      pushMatrix();
+       // if (ringsShape!=null){
+       //   shape(ringsShape);
+       // }
+        shape(sphere);
+//      popMatrix();
       }
-      shape(sphere);
-//    popMatrix();
-    }
     popMatrix();
-//    popMatrix();
+
     rotationX += velocityX;
     rotationY += velocityY;
     if (rotationY>=360)

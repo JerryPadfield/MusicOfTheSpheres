@@ -8,11 +8,3 @@ Under GNU GPL 3.0
 sound art piece. See more at (http://www.jerrypadfield.co.uk/music-of-the-spheres). 
 
 Developed in [Processing](http://processing.org). Max patch and puredata patch remnants of an attempt to implement OSC communication from the Processing sketch.
-
-TODO:
- * Depth sorting implementation
- * Make each planet interesting
- * Animate camera movement
- 
-
-

@@ -7,6 +7,13 @@ Developed as part of the MA Creative Media Practice at [University of the West o
 Under GNU GPL 3.0
 
 ### A virtual 3D representation of the Solar System which creates an evolving, non-repeatable
-sound art piece. See more at (http://www.jerrypadfield.co.uk/music-of-the-spheres). 
+sound art piece. See more at http://www.jerrypadfield.co.uk/music-of-the-spheres. 
 
 Developed in [Processing](http://processing.org). Main Processing file is SolarSystem.pde. Max patch and PureData patch are remnants of an attempt to implement OSC communication from the Processing sketch.
+
+Credits
+-------
+Data to build the planets with correct proportional sizes, rotation speeds, orbits, etc. was taken from: https://nssdc.gsfc.nasa.gov/planetary/factsheet/.
+
+Image textures for the planets and starfield from: https://www.solarsystemscope.com/textures under the Creative Commons license.
+

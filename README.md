@@ -1,6 +1,8 @@
 # MusicOfTheSpheres
 ## 3D Solar System Sound Art Piece in Processing
 
+![Music of the Spheres screenshot](http://jerrypadfield.co.uk/wp-content/uploads/2017/10/Screen-Shot-2017-12-13-at-18.31.21.png)
+
 Developed as part of the MA Creative Media Practice at [University of the West of Scotland](http://uws.ac.uk)
 Under GNU GPL 3.0
 
